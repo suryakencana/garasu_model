@@ -19,9 +19,10 @@
 from datetime import datetime, date
 import time
 
-import sqlalchemy as sa
+from sqlalchemy.types import DateTime
 from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.sql import functions
+import sqlalchemy as sa
 
 
 class References(object):
@@ -165,7 +166,7 @@ class JsonSerializableMixin(object):
 
 class utcnow(functions.FunctionElement):
     key = 'utcnow'
-    type = sa.DateTime()
+    type = DateTime()
 
 
 @compiles(utcnow)
@@ -189,7 +190,7 @@ def _sqlite_utcnow(element, compiler, **kw):
 def _pg_utcnow(element, compiler, **kw):
     """Postgresql-specific compilation handler."""
 
-    return "(CURRENT_TIMESTAMP AT TIME ZONE 'utc')::TIMESTAMP WITH TIME ZONE"
+    return "TIMEZONE('utc', CURRENT_TIMESTAMP)"
 
 
 @sa.event.listens_for(sa.Table, "after_parent_attach")
