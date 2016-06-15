@@ -16,9 +16,13 @@
  # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  #  __init__.py
 """
+from ._version import get_version
 
 from .model.meta.base import Base, get_session_factory, get_engine, get_tm_session, bind_engine
 from pyramid.settings import asbool
+
+__all__ = ('__version__',)
+__version__ = get_version()
 
 
 def includeme(config):

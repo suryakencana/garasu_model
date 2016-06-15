@@ -88,6 +88,7 @@ if __name__ == "__main__":
           author_email=AUTHOR_EMAIL,
           url=URL,
           license=LICENSE,
+          include_package_data=True,
           install_requires=INSTALL_REQUIRES,
           extras_require=EXTRAS_REQUIRE,
           entry_points=ENTRY_POINTS,
