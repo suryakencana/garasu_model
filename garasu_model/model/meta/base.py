@@ -29,10 +29,25 @@ __all__ = (
     'get_engine'
 )
 
+# Recommended naming convention used by Alembic, as various different database
+# providers will autogenerate vastly different names making migrations more
+# difficult. See: http://alembic.readthedocs.org/en/latest/naming.html
+NAMING_CONVENTION = {
+    "ck": "ck_%(table_name)s_%(constraint_name)s",
+    "pk": "pk_%(table_name)s",
+    "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
+    "uq": "uq_%(table_name)s_%(column_0_name)s",
+    "ix": "ix_%(table_name)s_%(column_0_name)s"
+}
+
+metadata = MetaData(naming_convention=NAMING_CONVENTION)
+
 
 class Base(References):
-    pass
     # query = DBSession.query_property()
+    pass
+
+Base = declarative_base(cls=Base, metadata=metadata)
 
 
 def get_engine(settings, prefix='sqlalchemy.'):
@@ -84,16 +99,4 @@ def bind_engine(engine,
     if should_create:
         base.metadata.create_all(engine)
 
-# Recommended naming convention used by Alembic, as various different database
-# providers will autogenerate vastly different names making migrations more
-# difficult. See: http://alembic.readthedocs.org/en/latest/naming.html
-NAMING_CONVENTION = {
-    "ck": "ck_%(table_name)s_%(constraint_name)s",
-    "pk": "pk_%(table_name)s",
-    "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
-    "uq": "uq_%(table_name)s_%(column_0_name)s",
-    "ix": "ix_%(table_name)s_%(column_0_name)s"
-}
 
-metadata = MetaData(naming_convention=NAMING_CONVENTION)
-Base = declarative_base(cls=Base, metadata=metadata)
