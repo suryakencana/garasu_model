@@ -22,6 +22,7 @@ VERSION_UNKNOWN = '0+unknown'
 
 def parse_version(ver):
     """Parse a `git describe` version into a dictionary."""
+    print(ver)
     ver_parts = ver.split('-')
     ver_dict = {}
     for patt, part in zip(VERSION_FMT, ver_parts):
