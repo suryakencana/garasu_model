@@ -24,14 +24,14 @@ from slugify import slugify
 from sqlalchemy import Column, Integer, FLOAT, Unicode, CHAR
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import synonym
-from dateutil import tz, parser as dateparser
+from dateutil import tz
 
 
 # for datetime utc convert to current timezone
 def utc_tz(dt):
     try:
-        dt = dateparser.parse(dt)
-        return dt.replace(tzinfo=tz.tzutc()).astimezone(tz.tzlocal())
+        if isinstance(dt, datetime.datetime):
+            return dt.replace(tzinfo=tz.tzutc()).astimezone(tz.tzlocal())
     except ValueError:
         pass
 
