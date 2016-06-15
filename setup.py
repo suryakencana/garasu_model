@@ -32,6 +32,7 @@ INSTALL_REQUIRES = [
     'SQLAlchemy',
     'sqlalchemy_utils',
     'awesome-slugify',
+    'python-dateutil',
     'bcrypt',
     'transaction',
     'zope.sqlalchemy'

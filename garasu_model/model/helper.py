@@ -16,6 +16,7 @@
  # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  #  helper.py
 """
+import datetime
 import hashlib
 import random
 import time
@@ -23,6 +24,16 @@ from slugify import slugify
 from sqlalchemy import Column, Integer, FLOAT, Unicode, CHAR
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import synonym
+from dateutil import tz, parser as dateparser
+
+
+# for datetime utc convert to current timezone
+def utc_tz(dt):
+    try:
+        dt = dateparser.parse(dt)
+        return dt.replace(tzinfo=tz.tzutc()).astimezone(tz.tzlocal())
+    except ValueError:
+        pass
 
 
 def guid(*args):
