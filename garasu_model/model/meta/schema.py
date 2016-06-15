@@ -199,16 +199,16 @@ def timestamp_cols(table, metadata):
     if metadata is Base.metadata:
         table.append_column(
             sa.Column('created',
-                      sa.DateTime,
+                      sa.DateTime(),
                       nullable=False,
                       server_default=sa.func.now(),
-                      default=utcnow)
+                      default=utcnow())
         )
         table.append_column(
             sa.Column('modified',
-                      sa.DateTime,
+                      sa.DateTime(),
                       nullable=False,
                       server_default=sa.func.now(),
-                      default=utcnow,
-                      onupdate=utcnow)
+                      default=utcnow(),
+                      onupdate=utcnow())
         )
