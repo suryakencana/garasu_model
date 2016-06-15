@@ -23,6 +23,18 @@ from sqlalchemy.orm import sessionmaker
 import zope.sqlalchemy
 
 
+__all__ = (
+    'Base',
+    'get_tm_session',
+    'get_engine'
+)
+
+
+class Base(References):
+    pass
+    # query = DBSession.query_property()
+
+
 def get_engine(settings, prefix='sqlalchemy.'):
     return engine_from_config(settings, prefix)
 
@@ -60,10 +72,17 @@ def get_tm_session(session_factory, transaction_manager):
     return dbsession
 
 
-class Base(References):
-    pass
-    # query = DBSession.query_property()
+def bind_engine(engine,
+                base=Base,
+                should_create=False,
+                should_drop=False):
 
+    base.metadata.bind = engine
+    if should_drop:
+        base.metadata.reflect(engine)
+        base.metadata.drop_all(engine)
+    if should_create:
+        base.metadata.create_all(engine)
 
 # Recommended naming convention used by Alembic, as various different database
 # providers will autogenerate vastly different names making migrations more

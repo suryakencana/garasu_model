@@ -19,7 +19,7 @@
 from datetime import datetime, date
 import time
 
-from sqlalchemy import event, Column, ForeignKeyConstraint, DateTime, Table
+import sqlalchemy as sa
 from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.sql import functions
 
@@ -47,14 +47,14 @@ class References(object):
 
         """
         # create pairs of (Foreign key column, primary key column)
-        cols = [(Column(), refcol) for refcol in ref_table.primary_key]
+        cols = [(sa.Column(), refcol) for refcol in ref_table.primary_key]
 
         # set "tablename_colname = Foreign key Column" on the local class
         for col, refcol in cols:
             setattr(cls, "%s_%s" % (ref_table.name, refcol.name), col)
 
         # add a ForeignKeyConstraint([local columns], [remote columns])
-        cls.__table__.append_constraint(ForeignKeyConstraint(*zip(*cols)))
+        cls.__table__.append_constraint(sa.ForeignKeyConstraint(*zip(*cols)))
 
 
 class JsonSerializableMixin(object):
@@ -165,7 +165,7 @@ class JsonSerializableMixin(object):
 
 class utcnow(functions.FunctionElement):
     key = 'utcnow'
-    type = DateTime(timezone=True)
+    type = sa.DateTime()
 
 
 @compiles(utcnow)
@@ -192,19 +192,23 @@ def _pg_utcnow(element, compiler, **kw):
     return "(CURRENT_TIMESTAMP AT TIME ZONE 'utc')::TIMESTAMP WITH TIME ZONE"
 
 
-@event.listens_for(Table, "after_parent_attach")
+@sa.event.listens_for(sa.Table, "after_parent_attach")
 def timestamp_cols(table, metadata):
     from .base import Base
 
     if metadata is Base.metadata:
         table.append_column(
-            Column('created',
-                   DateTime(timezone=True),
-                   nullable=False, default=utcnow())
+            sa.Column('created',
+                      sa.DateTime,
+                      nullable=False,
+                      server_default=sa.func.now(),
+                      default=utcnow)
         )
         table.append_column(
-            Column('modified',
-                   DateTime(timezone=True),
-                   nullable=False,
-                   default=utcnow(), onupdate=utcnow())
+            sa.Column('modified',
+                      sa.DateTime,
+                      nullable=False,
+                      server_default=sa.func.now(),
+                      default=utcnow,
+                      onupdate=utcnow)
         )

@@ -17,7 +17,8 @@
  #  __init__.py
 """
 
-from .model.meta.base import Base, get_session_factory, get_engine, get_tm_session
+from .model.meta.base import Base, get_session_factory, get_engine, get_tm_session, bind_engine
+from pyramid.settings import asbool
 
 
 def includeme(config):
@@ -28,6 +29,8 @@ def includeme(config):
 
     """
     settings = config.get_settings()
+    should_create = asbool(settings.get('garasu_model.should_create_all', False))
+    should_drop = asbool(settings.get('garasu_model.should_drop_all', False))
 
     # use pyramid_tm to hook the transaction lifecycle to the request
     config.include('pyramid_tm')
@@ -35,15 +38,21 @@ def includeme(config):
     engine = get_engine(settings)
     session_factory = get_session_factory(engine)
 
-    Base.metadata.bind = engine
-    Base.metadata.create_all(engine)
-
     config.registry['db_session_factory'] = session_factory
 
-    # make request.dbsession available for use in Pyramid
+    # make request.db available for use in Pyramid
     config.add_request_method(
         # r.tm is the transaction manager used by pyramid_tm
         lambda r: get_tm_session(session_factory, r.tm),
         'db',
         reify=True
     )
+
+    # Register a deferred action to bind the engine when the configuration is
+    # committed. Deferring the action means that this module can be included
+    # before model modules without ill effect.
+    config.action(None, bind_engine, (engine,), {
+        'should_create': should_create,
+        'should_drop': should_drop
+    }, order=10)
+
