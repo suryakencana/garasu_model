@@ -19,7 +19,7 @@
 from .schema import References
 from sqlalchemy import engine_from_config, MetaData
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, scoped_session
+from sqlalchemy.orm import sessionmaker
 import zope.sqlalchemy
 
 
@@ -28,13 +28,6 @@ __all__ = (
     'get_tm_session',
     'get_engine'
 )
-
-# Create a thread-local session factory (which can also be used directly as a
-# session):
-#
-#   http://docs.sqlalchemy.org/en/latest/orm/contextual.html#using-thread-local-scope-with-web-applications
-#
-Session = scoped_session(sessionmaker())
 
 # Recommended naming convention used by Alembic, as various different database
 # providers will autogenerate vastly different names making migrations more
@@ -62,9 +55,9 @@ def get_engine(settings, prefix='sqlalchemy.'):
 
 
 def get_session_factory(engine):
-    Session = sessionmaker()
-    Session.configure(bind=engine)
-    return Session
+    factory = sessionmaker()
+    factory.configure(bind=engine)
+    return factory
 
 
 def get_tm_session(session_factory, transaction_manager):
