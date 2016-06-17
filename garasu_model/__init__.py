@@ -25,6 +25,12 @@ __all__ = ('__version__',)
 __version__ = get_version()
 
 
+def tm_activate_hook(request):
+    if request.path.startswith(("/_debug_toolbar/", "/static/")):
+        return False
+    return True
+
+
 def includeme(config):
     """
     Initialize the model for a Pyramid app.
@@ -36,6 +42,14 @@ def includeme(config):
     should_create = asbool(settings.get('garasu_model.should_create_all', False))
     should_drop = asbool(settings.get('garasu_model.should_drop_all', False))
 
+    # Configure the transaction manager to support retrying retryable
+    # exceptions. We also register the session factory with the thread-local
+    # transaction manager, so that all sessions it creates are registered.
+    config.add_settings({
+        "tm.attempts": 3,
+        "tm.activate_hook": tm_activate_hook,
+        "tm.annotate_user": False,
+    })
     # use pyramid_tm to hook the transaction lifecycle to the request
     config.include('pyramid_tm')
 
