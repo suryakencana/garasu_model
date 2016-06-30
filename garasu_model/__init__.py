@@ -18,8 +18,8 @@
 """
 from ._version import get_version
 
-from .model.meta.base import Base, get_session_factory, get_engine, get_tm_session, bind_engine
 from pyramid.settings import asbool
+from .model.meta.base import Base, get_session_factory, get_engine, get_tm_session, bind_engine
 
 __all__ = ('__version__',)
 __version__ = get_version()

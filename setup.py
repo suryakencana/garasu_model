@@ -7,8 +7,6 @@ from contextlib import contextmanager
 from setuptools.command.sdist import sdist as _sdist
 from setuptools.command.test import test as _test
 
-###############################################################################
-
 NAME = 'garasu_model'
 DESC = 'SQLAlchemy base model for pyramid'
 AUTHOR = 'Nanang Suryadi'
@@ -38,14 +36,15 @@ INSTALL_REQUIRES = [
     'zope.sqlalchemy'
 ]
 EXTRAS_REQUIRE = {
-    'dev': [],
+    'dev': ['check-manifest'],
+    'test': ['coverage'],
 }
-ENTRY_POINTS = {}
+ENTRY_POINTS = """\
+      """
 
 with open('README.rst', encoding='utf-8') as fp:
     LONGDESC = fp.read()
 
-###############################################################################
 
 VERSION = __import__('garasu_model').__version__
 VERSION_FILE = 'garasu_model/_version.py'
@@ -78,22 +77,21 @@ class test(_test):
         print('please run tox instead')
 
 
-if __name__ == "__main__":
-    setup(name=NAME,
-          version=VERSION,
-          description=DESC,
-          long_description=LONGDESC,
-          classifiers=CLASSIFIERS,
-          keywords=KEYWORDS,
-          author=AUTHOR,
-          author_email=AUTHOR_EMAIL,
-          url=URL,
-          license=LICENSE,
-          include_package_data=True,
-          install_requires=INSTALL_REQUIRES,
-          extras_require=EXTRAS_REQUIRE,
-          entry_points=ENTRY_POINTS,
-          cmdclass={'sdist': sdist,
-                    'test': test},
-          packages=find_packages(include=['garasu_model', 'garasu_model.*']),
-          zip_safe=False)
+setup(name=NAME,
+      version=VERSION,
+      description=DESC,
+      long_description=LONGDESC,
+      classifiers=CLASSIFIERS,
+      keywords=KEYWORDS,
+      author=AUTHOR,
+      author_email=AUTHOR_EMAIL,
+      url=URL,
+      license=LICENSE,
+      include_package_data=True,
+      install_requires=INSTALL_REQUIRES,
+      extras_require=EXTRAS_REQUIRE,
+      entry_points=ENTRY_POINTS,
+      cmdclass={'sdist': sdist,
+                'test': test},
+      packages=find_packages(include=['garasu_model', 'garasu_model.*']),
+      zip_safe=False)
