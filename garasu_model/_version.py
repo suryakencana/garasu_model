@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from garasu_model._compat import text_type
 
 import os
 import re
@@ -23,7 +24,7 @@ VERSION_UNKNOWN = '0+unknown'
 def parse_version(ver):
     """Parse a `git describe` version into a dictionary."""
     print(ver)
-    ver_parts = str(ver, 'utf-8').split('-')
+    ver_parts = text_type(ver).split('-')
     ver_dict = {}
     for patt, part in zip(VERSION_FMT, ver_parts):
         match = re.match(patt, part)
