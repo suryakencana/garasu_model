@@ -23,15 +23,16 @@ CLASSIFIERS = [
     'Programming Language :: Python :: 2.7. 3.4+',
 ]
 INSTALL_REQUIRES = [
-    'zope.sqlalchemy',
+    'setuptools',
     'SQLAlchemy',
+    'zope.sqlalchemy',
+    'transaction',
     'pyramid',
     'pyramid_tm',
     'sqlalchemy_utils',
     'awesome-slugify',
     'python-dateutil',
     'bcrypt',
-    'transaction'
 ]
 EXTRAS_REQUIRE = {
     'dev': ['check-manifest'],
