@@ -24,10 +24,10 @@ CLASSIFIERS = [
 ]
 INSTALL_REQUIRES = [
     'setuptools',
+      'pyramid',
     'SQLAlchemy',
     'zope.sqlalchemy',
     'transaction',
-    'pyramid',
     'pyramid_tm',
     'sqlalchemy_utils',
     'awesome-slugify',
