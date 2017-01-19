@@ -77,7 +77,7 @@ class test(_test):
 
 
 setup(name=NAME,
-      version=VERSION,
+      version='0.3.2',
       description=DESC,
       long_description=LONGDESC,
       classifiers=CLASSIFIERS,
